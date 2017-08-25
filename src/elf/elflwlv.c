@@ -603,10 +603,9 @@ static orl_return ParseDefLibEntry( const char **contents, size_t *len,
 /*********************************************************************/
 {
     orl_return retval;
-    char *arg = NULL;
     for( ;; ) {
         const size_t l = strncspn( *contents, ", \t", *len );
-        arg = realloc(arg, l + 1);
+        char *const arg = alloca(l + 1);
         memcpy( arg, *contents, l );
         arg[l] = 0;
         *len -= l;
@@ -618,7 +617,6 @@ static orl_return ParseDefLibEntry( const char **contents, size_t *len,
         (*contents)++;
     }
     
-    free(arg);
     return retval;
 }
 

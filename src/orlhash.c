@@ -91,7 +91,7 @@ orl_return ORLHashTableInsert( orl_hash_table hash_table, struct orl_hash_key ke
     orl_hash_data_entry last_data_entry;
     orl_hash_data_entry new_data_entry;
 
-    new_data_entry = (orl_hash_data_entry)malloc(sizeof(struct orl_hash_data_entry_struct));
+    new_data_entry = (orl_hash_data_entry)ORL_PTR_ALLOC(hash_table, sizeof(struct orl_hash_data_entry_struct));
     new_data_entry->data = data;
     new_data_entry->next = NULL;
     hash_value = hash_table->hash_func( hash_table->size, key );
@@ -105,7 +105,7 @@ orl_return ORLHashTableInsert( orl_hash_table hash_table, struct orl_hash_key ke
             return( ORL_OKAY );
         }
     }
-    new_hash_entry = (orl_hash_entry)malloc(sizeof(struct orl_hash_data_entry_struct));
+    new_hash_entry = (orl_hash_entry)ORL_PTR_ALLOC(hash_table, sizeof(struct orl_hash_data_entry_struct));
     new_hash_entry->key = key;
     new_hash_entry->data_entry = new_data_entry;
     new_hash_entry->next = hash_table->table[hash_value];
@@ -127,8 +127,9 @@ orl_hash_data_entry ORLHashTableQuery( orl_hash_table hash_table, struct orl_has
 
 orl_hash_table ORLHashTableCreate( struct orl_funcs *funcs, orl_hash_value size, orl_hash_table_type type )
 {
-    const orl_hash_table hash_table = (orl_hash_table)malloc(sizeof(struct orl_hash_table_struct));
-    hash_table->table = (orl_hash_entry*)calloc(size, sizeof(orl_hash_entry));
+    const orl_hash_table hash_table = (orl_hash_table)funcs->cli_alloc(sizeof(struct orl_hash_table_struct));
+    hash_table->table = (orl_hash_entry*)funcs->cli_alloc(size * sizeof(orl_hash_entry));
+    memset(hash_table->table, 0, size * sizeof(orl_hash_entry));
     hash_table->size = size;
     hash_table->funcs = funcs;
     switch( type ) {
@@ -163,11 +164,12 @@ void ORLHashTableFree( orl_hash_table hash_table )
             next_hash_entry = hash_entry->next;
             for( data_entry = hash_entry->data_entry; data_entry != NULL; data_entry = next_data_entry ) {
                 next_data_entry = data_entry->next;
-                free(data_entry);
+                ORL_PTR_FREE( hash_table, data_entry );
             }
-            free( hash_entry );
+            ORL_PTR_FREE( hash_table, hash_entry );
         }
     }
-    free( hash_table->table );
-    free( hash_table );
+    
+    ORL_PTR_FREE( hash_table, hash_table->table );
+    ORL_PTR_FREE( hash_table, hash_table );
 }

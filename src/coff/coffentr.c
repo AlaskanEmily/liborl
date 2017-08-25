@@ -39,7 +39,7 @@
 
 coff_handle CoffInit( struct orl_funcs *funcs )
 {
-    const coff_handle coff_hnd = malloc(sizeof( struct coff_handle_struct ) );
+    const coff_handle coff_hnd = (coff_handle)funcs->cli_alloc(sizeof( struct coff_handle_struct ) );
     coff_hnd->funcs = funcs;
     coff_hnd->first_file_hnd = NULL;
     return coff_hnd;
@@ -52,7 +52,7 @@ orl_return CoffFini( coff_handle coff_hnd )
         if( return_val != ORL_OKAY )
             return return_val;
     }
-    free(coff_hnd);
+    ORL_PTR_FREE(coff_hnd, coff_hnd);
     return ORL_OKAY;
 }
 

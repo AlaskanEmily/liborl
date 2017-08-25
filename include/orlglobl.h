@@ -36,6 +36,7 @@
 #include "orl_pack.h"
 
 #include <stdint.h>
+#include <stddef.h>
 
 #define ORL_FID2PH( fid )       (((int)(uintptr_t)(fid)) - 1)
 #define ORL_PH2FID( ph )        ((orl_file_id)(uintptr_t)(ph + 1))
