@@ -2,7 +2,10 @@ OBJECTS=orlentry.o orlflhnd.o orlhash.o memicmp.o strcasecmp.o strcasestr.o
 COFFOBJECTS=coffentr.o coffflhn.o coffimpl.o coffload.o cofflwlv.o
 ELFOBJECTS=elfentr.o elfflhn.o elfload.o elflwlv.o
 
-all: liborl.so test
+all: liborl.so liborl-static.a
+
+AR?=ar
+RANLIB?=ranlib
 
 CC?=cc
 LINK?=cc
@@ -14,7 +17,8 @@ CXXFLAGS?=$(CCFLAGS) -std=c++98 -fno-rtti -fno-exceptions
 AR?=ar
 RANLIB?=ranlib
 
-CIFLAGS=$(CFLAGS) -DORL_ENABLE_ELF -DORL_ENABLE_COFF -Iinclude 
+ORL_FEATURE_FLAGS?=-DORL_ENABLE_ELF -DORL_ENABLE_COFF
+CIFLAGS=$(CFLAGS) $(ORL_FEATURE_FLAGS) -Iinclude 
 ORLCIFLAGS=$(CIFLAGS) -ansi
 COFFCIFLAGS=$(CIFLAGS) -Iinclude/coff -ansi
 OMFCIFLAGS=$(CIFLAGS) -Iinclude/omf -ansi
@@ -43,6 +47,10 @@ strcasestr.o: src/strcasestr.c src/strcasestr.h src/str-two-way.h
 
 liborl.so: $(OBJECTS) $(COFFOBJECTS) $(ELFOBJECTS)
 	$(LINK) -g $(COFFOBJECTS) $(ELFOBJECTS) $(OBJECTS) -shared -o liborl.so
+
+liborl-static.a: $(OBJECTS) $(COFFOBJECTS) $(ELFOBJECTS)
+	$(AR) -rc liborl-static.a $(OBJECTS)
+	$(RANLIB) liborl-static.a
 
 # COFF library
 
@@ -87,5 +95,5 @@ elflwlv.o: src/elf/elflwlv.c
 clean:
 	rm *.so *.o
 
-test: test.c liborl.so
-	$(CC) $(CIFLAGS) -Wl,-Map,test.map test.c $(COFFOBJECTS) $(ELFOBJECTS) $(OBJECTS) -o test
+#test: test.c liborl.so
+#	$(CC) $(CIFLAGS) -Wl,-Map,test.map test.c $(COFFOBJECTS) $(ELFOBJECTS) $(OBJECTS) -o test
