@@ -40,8 +40,7 @@
 /*
  * Library stuff
  */
-ORL_PACKED
-struct lib_header {
+ORL_PACKED_STRUCT lib_header {
     uint8_t cmd;
     uint16_t length;
     uint32_t dict_start;
@@ -245,14 +244,12 @@ enum {
     LOC_MS_LINK_OFFSET_32= 13       /* like OFFSET_32 but loader resolved*/
 };
 
-ORL_PACKED
-struct obj_record {
+ORL_PACKED_STRUCT obj_record {
     uint8_t command;
     uint16_t length;
 };
 
-ORL_PACKED
-struct obj_name {
+ORL_PACKED_STRUCT obj_name {
     uint8_t len;
     char name[1];
 };
@@ -313,8 +310,7 @@ enum {
     target processor.
 */
 
-ORL_PACKED
-struct cpu_data{
+ORL_PACKED_STRUCT cpu_data{
     char processor;
     char mem_model;
     char unknown;

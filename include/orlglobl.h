@@ -101,8 +101,8 @@ typedef enum {
     ORL_UNRECOGNIZED_FORMAT
 } orl_file_format;
 
-ORL_PACKED
-struct sorl_linnum {
+ORL_PACKED_STRUCT
+sorl_linnum {
     uint16_t linnum;
     uint32_t off;
 };

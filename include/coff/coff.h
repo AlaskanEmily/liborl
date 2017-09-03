@@ -31,8 +31,7 @@
 #include <stdbool.h>
 #include "../orl_pack.h"
 
-ORL_PACKED
-struct coff_file_header {
+ORL_PACKED_STRUCT coff_file_header {
     uint16_t cpu_type;
     uint16_t num_sections;
     uint32_t time_stamp;
@@ -46,8 +45,7 @@ struct coff_file_header {
 
 #define COFF_SEC_NAME_LEN 8
 
-ORL_PACKED
-struct coff_section_header{
+ORL_PACKED_STRUCT coff_section_header{
     char name[COFF_SEC_NAME_LEN];
     uint32_t virtsize;
     uint32_t offset;
@@ -62,8 +60,7 @@ struct coff_section_header{
 
 #define COFF_SECTION_HEADER_SIZE sizeof(coff_section_header)
 
-ORL_PACKED
-struct coff_reloc {
+ORL_PACKED_STRUCT coff_reloc {
     uint32_t offset;
     uint32_t sym_tab_index;
     uint16_t type;
@@ -75,12 +72,10 @@ struct coff_reloc {
 
 /* typedef struct _IMAGE_SYMBOL in WINNT.H */
 
-ORL_PACKED
-struct coff_symbol {
+ORL_PACKED_STRUCT coff_symbol {
     union {
         char name_string[COFF_SYM_NAME_LEN];
-        ORL_PACKED
-        struct {
+        ORL_PACKED_STRUCT {
             uint32_t zeros;
             uint32_t offset;
         } non_name;
@@ -98,8 +93,7 @@ struct coff_symbol {
 #define _CoffBaseType( sym_type )   ( (sym_type) & 0xf )
 #define _CoffComplexType( sym_type )    ( ( (sym_type) >> 4 ) & 0xf )
 
-ORL_PACKED
-struct coff_sym_func {
+ORL_PACKED_STRUCT coff_sym_func {
     uint32_t bf;
     uint32_t size;
     uint32_t linenum;
@@ -107,8 +101,7 @@ struct coff_sym_func {
     char unused[3];
 };
 
-ORL_PACKED
-struct coff_sym_bfef {
+ORL_PACKED_STRUCT coff_sym_bfef {
     char unused1[4];
     uint16_t linenum;
     char unused2[6];
@@ -116,8 +109,7 @@ struct coff_sym_bfef {
     char unused3[2];
 };
 
-ORL_PACKED
-struct coff_sym_weak {
+ORL_PACKED_STRUCT coff_sym_weak {
     uint32_t tag_index;
     uint32_t characteristics;
     char unused1[10];
@@ -126,8 +118,7 @@ struct coff_sym_weak {
 #define COFF_FILE_NAME_LEN 18
 typedef char coff_sym_file[COFF_FILE_NAME_LEN];
 
-ORL_PACKED
-struct coff_sym_section {
+ORL_PACKED_STRUCT coff_sym_section {
     uint32_t length;
     uint16_t num_relocs;
     uint16_t num_line_numbers;
@@ -137,8 +128,7 @@ struct coff_sym_section {
     char unused[3];
 };
 
-ORL_PACKED
-struct coff_line_num {
+ORL_PACKED_STRUCT coff_line_num {
     union {
         uint32_t     symbol_table_index;
         uint32_t     RVA;
@@ -473,14 +463,12 @@ enum {
  * adc qword ptr [asdf], 12345678h
  */
 
-ORL_PACKED
-struct coff_image_data_directory {
+ORL_PACKED_STRUCT coff_image_data_directory {
     uint32_t rva;
     uint32_t size;
 };
 
-ORL_PACKED
-struct coff_opt_hdr {
+ORL_PACKED_STRUCT coff_opt_hdr {
     uint16_t magic; /*standard fields */
     uint8_t l_major;
     uint8_t l_minor;
@@ -527,8 +515,7 @@ struct coff_opt_hdr {
 
 /*#define COFF_OPT_HDR_SIZE sizeof( coff_opt_hdr ) */
 
-ORL_PACKED
-struct coff_opt_hdr64 {
+ORL_PACKED_STRUCT coff_opt_hdr64 {
     uint16_t magic; /*standard fields */
     uint8_t l_major;
     uint8_t l_minor;
@@ -582,8 +569,7 @@ struct coff_opt_hdr64 {
 
 #define IMPORT_OBJECT_HDR_SIG2  0xffff
 
-ORL_PACKED
-struct coff_import_object_header {
+ORL_PACKED_STRUCT coff_import_object_header {
     uint16_t sig1;       /* Must be IMAGE_FILE_MACHINE_UNKNOWN */
     uint16_t sig2;       /* Must be IMPORT_OBJECT_HDR_SIG2. */
     uint16_t version;

@@ -60,15 +60,13 @@ enum {
 
 #define OLD_PE_TBL_NUMBER 9
 
-ORL_PACKED
-struct pe_hdr_table_entry{
+ORL_PACKED_STRUCT pe_hdr_table_entry{
     pe_va rva;
     uint32_t size;
 };
 
 /* PE32 header structure */
-ORL_PACKED
-struct pe_header{
+ORL_PACKED_STRUCT pe_header{
     uint32_t signature;
     uint16_t cpu_type;
     uint16_t num_objects;
@@ -111,8 +109,7 @@ struct pe_header{
 };
 
 /* PE32+ header structure */
-ORL_PACKED
-struct pe_header64 {
+ORL_PACKED_STRUCT pe_header64 {
     uint32_t         signature;
     uint16_t         cpu_type;
     uint16_t         num_objects;
@@ -243,8 +240,7 @@ enum {
 
 /* PE object table structure */
 #define PE_OBJ_NAME_LEN 8
-ORL_PACKED
-struct pe_object {
+ORL_PACKED_STRUCT pe_object {
     char name[PE_OBJ_NAME_LEN];
     uint32_t virtual_size;
     pe_va rva;
@@ -290,8 +286,7 @@ struct pe_object {
 #define PE_OBJ_ALIGN_SHIFT      20
 
 /* PE export directory table structure */
-ORL_PACKED
-struct pe_export_directory {
+ORL_PACKED_STRUCT pe_export_directory {
     uint32_t flags;
     uint32_t time_stamp;
     uint16_t major;
@@ -307,8 +302,7 @@ struct pe_export_directory {
 
 
 /* PE import directory table structure */
-ORL_PACKED
-struct pe_import_directory {
+ORL_PACKED_STRUCT pe_import_directory {
     pe_va import_lookup_table_rva;        /* was flags */
     uint32_t time_stamp;
     uint16_t major;
@@ -322,8 +316,7 @@ struct pe_import_directory {
 #define PE_IMPORT_BY_ORDINAL    0x80000000UL
 
 /* PE import hint-name table structure */
-ORL_PACKED
-struct pe_hint_name_entry {
+ORL_PACKED_STRUCT pe_hint_name_entry {
     uint16_t hint;
     uint8_t name[2]; /* variable size, padded to even boundry */
 };
@@ -333,8 +326,7 @@ struct pe_hint_name_entry {
 /* PE fixup table structure */
 typedef uint16_t pe_fixup_entry;
 
-ORL_PACKED
-struct pe_fixup_header {
+ORL_PACKED_STRUCT pe_fixup_header {
     pe_va page_rva;
     uint32_t block_size;
 /*  pe_fixup_entry      fixups[] */     /* variable size */
@@ -342,8 +334,7 @@ struct pe_fixup_header {
 
 #define PEUP 12
 
-ORL_PACKED
-struct old_pe_fixup_entry {
+ORL_PACKED_STRUCT old_pe_fixup_entry {
     pe_va virt_addr;
     uint32_t value;
     uint16_t type;
@@ -374,8 +365,7 @@ struct old_pe_fixup_entry {
 #define DEBUG_TYPE_CODEVIEW   2
 #define DEBUG_TYPE_MISC       4
 
-ORL_PACKED
-struct debug_directory {
+ORL_PACKED_STRUCT debug_directory {
     uint32_t flags;
     uint32_t time_stamp;
     uint16_t major;
@@ -387,8 +377,7 @@ struct debug_directory {
 };
 
 /* PE DEBUG_TYPE_MISC data */
-ORL_PACKED
-struct debug_misc_dbgdata {
+ORL_PACKED_STRUCT debug_misc_dbgdata {
     uint32_t data_type;          /* 1 == filename of debug info file */
     uint32_t length;             /* size of this data block */
     uint32_t unicode;            /* LSB is unicode flag, rest is reserved */
@@ -397,7 +386,7 @@ struct debug_misc_dbgdata {
 };
 
 /* procedure descriptor format for alpha and powerpc */
-struct procedure_descriptor {
+ORL_PACKED_STRUCT procedure_descriptor {
     uint32_t beginaddress;
     uint32_t endaddress;
     uint32_t exceptionhandler;
@@ -406,8 +395,7 @@ struct procedure_descriptor {
 };
 
 /* PE resource directory structure */
-ORL_PACKED
-struct resource_dir_header {
+ORL_PACKED_STRUCT resource_dir_header {
     uint32_t flags;
     uint32_t time_stamp;
     uint16_t major;
@@ -422,8 +410,7 @@ A resource directory is a resource_dir_header followed immediately by
 ordered sorted name entries then sorted id entries.
 */
 
-ORL_PACKED
-struct resource_dir_entry {
+ORL_PACKED_STRUCT resource_dir_entry {
     uint32_t id_name;        /* see below */
     pe_va entry_rva;      /* see below */
 };
@@ -441,7 +428,7 @@ If entry_rva & PE_RESOURCE_MASK_ON the entry_rva & PE_RESOURCE_MASK is a rva
 otherwise it is a rva to a resource_entry.
 */
 
-struct resource_entry {
+ORL_PACKED_STRUCT resource_entry {
     uint32_t data_rva;       /* relative to Image Base */
     uint32_t size;
     uint32_t code_page;

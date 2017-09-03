@@ -55,8 +55,7 @@ typedef uint64_t Elf64_Xword;
 
 #define EI_NIDENT 16
 
-ORL_PACKED
-struct Elf32_Ehdr {
+ORL_PACKED_STRUCT Elf32_Ehdr {
     uint8_t e_ident[EI_NIDENT];        /* signature & ID info */
     Elf32_Half e_type;                 /* file type (i.e. obj file, exe file) */
     Elf32_Half e_machine;              /* required architecture */
@@ -77,8 +76,7 @@ struct Elf32_Ehdr {
 };
 
 /* ELF-64 header: identical to Elf32_Ehdr up to and including e_version */
-ORL_PACKED
-struct Elf64_Ehdr {
+ORL_PACKED_STRUCT Elf64_Ehdr {
     uint8_t e_ident[EI_NIDENT];        /* signature & ID info */
     Elf64_Half e_type;                 /* file type (i.e. obj file, exe file) */
     Elf64_Half e_machine;              /* required architecture */
@@ -279,8 +277,7 @@ struct Elf64_Ehdr {
 
 /* section header */
 
-ORL_PACKED
-struct Elf32_Shdr {
+ORL_PACKED_STRUCT Elf32_Shdr {
     Elf32_Word  sh_name;        /* name of the section */
     Elf32_Word  sh_type;        /* section type */
     Elf32_Word  sh_flags;
@@ -293,8 +290,7 @@ struct Elf32_Shdr {
     Elf32_Word  sh_entsize;     /* entry size for sects with fixed sized entries */
 };
 
-ORL_PACKED
-struct Elf64_Shdr {
+ORL_PACKED_STRUCT Elf64_Shdr {
     Elf64_Word  sh_name;        /* name of the section */
     Elf64_Word  sh_type;        /* section type */
     Elf64_Xword sh_flags;
@@ -356,8 +352,7 @@ struct Elf64_Shdr {
 
 /* symbol table entry */
 
-ORL_PACKED
-struct Elf32_Sym {
+ORL_PACKED_STRUCT Elf32_Sym {
     Elf32_Word  st_name;        /* symbol name index into string table */
     Elf32_Addr  st_value;       /* symbol "value" */
     Elf32_Word  st_size;        /* symbol size */
@@ -366,8 +361,7 @@ struct Elf32_Sym {
     Elf32_Half  st_shndx;       /* section index */
 };
 
-ORL_PACKED
-struct Elf64_Sym {
+ORL_PACKED_STRUCT Elf64_Sym {
     Elf64_Word  st_name;        /* symbol name index into string table */
     uint8_t  st_info;           /* symbol's type and binding attribs. */
     uint8_t  st_other;          /* no meaning yet. */
@@ -404,27 +398,23 @@ struct Elf64_Sym {
 
 /* relocation entries */
 
-ORL_PACKED
-struct Elf32_Rel {
+ORL_PACKED_STRUCT Elf32_Rel {
     Elf32_Addr  r_offset;       /* place to apply reloc (from begin of section) */
     Elf32_Word  r_info;         /* symbol idx, and type of reloc */
 };
 
-ORL_PACKED
-struct Elf32_Rela {
+ORL_PACKED_STRUCT Elf32_Rela {
     Elf32_Addr  r_offset;       /* place to apply reloc (from begin of section) */
     Elf32_Word  r_info;         /* symbol idx, and type of reloc */
     Elf32_Sword r_addend;       /* value used as a basis for the reloc. */
 };
 
-ORL_PACKED
-struct Elf64_Rel {
+ORL_PACKED_STRUCT Elf64_Rel {
     Elf64_Addr  r_offset;       /* place to apply reloc (from begin of section) */
     Elf64_Xword r_info;         /* symbol idx, and type of reloc */
 };
 
-ORL_PACKED
-struct Elf64_Rela {
+ORL_PACKED_STRUCT Elf64_Rela {
     Elf64_Addr  r_offset;       /* place to apply reloc (from begin of section) */
     Elf64_Xword r_info;         /* symbol idx, and type of reloc */
     Elf64_Sxword r_addend;      /* value used as a basis for the reloc. */
@@ -646,8 +636,7 @@ struct Elf64_Rela {
 
 /* program header */
 
-ORL_PACKED
-struct Elf32_Phdr {
+ORL_PACKED_STRUCT Elf32_Phdr {
     Elf32_Word  p_type;         /* type of segment */
     Elf32_Off   p_offset;       /* offset of segment from beginnning of file */
     Elf32_Addr  p_vaddr;        /* segment virtual address */
@@ -658,8 +647,7 @@ struct Elf32_Phdr {
     Elf32_Word  p_align;        /* segment align value (in mem & file) */
 };
 
-ORL_PACKED
-struct Elf64_Phdr {
+ORL_PACKED_STRUCT Elf64_Phdr {
     Elf64_Word  p_type;         /* type of segment */
     Elf64_Word  p_flags;        /* segment flags */
     Elf64_Off   p_offset;       /* offset of segment from beginnning of file */
@@ -699,8 +687,7 @@ struct Elf64_Phdr {
 
 /* note entry format */
 
-ORL_PACKED
-struct Elf_Note {
+ORL_PACKED_STRUCT Elf_Note {
     uint32_t     n_namesz;   /* length of name */
     uint32_t     n_descsz;   /* length of descriptor */
     uint32_t     n_type;     /* user defined "type" of the note */
@@ -716,8 +703,7 @@ struct Elf_Note {
 
 /* dynamic segment entry information. */
 
-ORL_PACKED
-struct El32_Dyn {
+ORL_PACKED_STRUCT El32_Dyn {
     Elf32_Sword         d_tag;
     union {
         Elf32_Word      d_val;
@@ -800,8 +786,7 @@ typedef unsigned long INITTERM( unsigned long modhandle, unsigned long flag );
 
 /* operating system information */
 
-ORL_PACKED
-struct Elf32_Os {
+ORL_PACKED_STRUCT Elf32_Os {
     Elf32_Word os_type;
     Elf32_Word os_size;
 };
@@ -819,8 +804,7 @@ struct Elf32_Os {
 
 /* OS/2-specific information */
 
-ORL_PACKED
-struct Elf32_OS2Info {
+ORL_PACKED_STRUCT Elf32_OS2Info {
     unsigned char os2_sessiontype;
     unsigned char os2_sessionflags;
     unsigned char os2_reserved[14];
@@ -835,8 +819,7 @@ struct Elf32_OS2Info {
 
 /* import table entry */
 
-ORL_PACKED
-struct Elf32_Import {
+ORL_PACKED_STRUCT Elf32_Import {
     Elf32_Word imp_ordinal;
     Elf32_Word imp_name;
     Elf32_Word imp_info;
@@ -853,8 +836,7 @@ struct Elf32_Import {
 
 /* export table entry */
 
-ORL_PACKED
-struct Elf32_Export {
+ORL_PACKED_STRUCT Elf32_Export {
     Elf32_Word exp_ordinal;
     Elf32_Word exp_symbol;
     Elf32_Word exp_name;
@@ -865,7 +847,7 @@ struct Elf32_Export {
 
 #define RH_NIDENT       16
 
-struct Elf32_Rhdr {
+ORL_PACKED_STRUCT Elf32_Rhdr {
     unsigned char rh_ident[RH_NIDENT];
     Elf32_Off rh_name;
     Elf32_Word rh_itnum;
@@ -910,8 +892,7 @@ struct Elf32_Rhdr {
 
 #define RI_NIDENT       4
 
-ORL_PACKED
-struct Elf32_Ritem {
+ORL_PACKED_STRUCT Elf32_Ritem {
     unsigned char       ri_ident[RI_NIDENT];
     Elf32_Word          ri_type;
     Elf32_Off           ri_typename;
@@ -935,16 +916,14 @@ struct Elf32_Ritem {
 
 /* demangle information structure */
 
-ORL_PACKED
-struct Elf32_Demangle {
+ORL_PACKED_STRUCT Elf32_Demangle {
     Elf32_Word  idm_dllname;
     Elf32_Word  idm_initparms;
 };
 
 /* default library structure */
 
-ORL_PACKED
-struct Elf32_Library {
+ORL_PACKED_STRUCT Elf32_Library {
     Elf32_Word  lib_name;
 };
 
