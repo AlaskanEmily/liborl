@@ -110,8 +110,7 @@ struct coff_reloc_assoc_struct {
     orl_reloc relocs;
 };
 
-ORL_PACKED
-struct coff_sec_handle_struct  {
+ORL_PACKED_STRUCT coff_sec_handle_struct  {
     orl_file_format file_format;
     coff_file_handle coff_file_hnd;
     coff_sec_handle next;
@@ -132,8 +131,7 @@ struct coff_sec_handle_struct  {
     bool                relocs_done     : 1;
 };
 
-ORL_PACKED
-struct coff_symbol_handle_struct {
+ORL_PACKED_STRUCT coff_symbol_handle_struct {
     orl_file_format file_format;
     coff_file_handle coff_file_hnd;
     orl_symbol_binding binding;
@@ -146,7 +144,7 @@ struct coff_symbol_handle_struct {
 
 typedef struct pe_header_struct pe_header;
 
-struct pe_header_struct {
+ORL_PACKED_STRUCT pe_header_struct {
     char MZ[2];
     char space[0x3a];
     short offset;
@@ -156,12 +154,12 @@ typedef union pe_opt_hdr_struct pe_opt_hdr;
 
 union pe_opt_hdr_struct {
     uint16_t magic;
-    struct {
+    ORL_PACKED_STRUCT {
         uint16_t magic;
         char space[94];
         uint32_t export_table_rva;
     } pe32;
-    struct {
+    ORL_PACKED_STRUCT {
         uint16_t magic;
         char space[110];
         uint32_t export_table_rva;
