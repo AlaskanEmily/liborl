@@ -485,9 +485,9 @@ static orl_return load_elf_sec_handles( elf_file_handle elf_file_hnd, elf_index 
 }
 
 
-static int section_compare( const void *a, const void *b )
+int section_compare( const void *a, const void *b )
 {
-    const elf_sec_handle sec1 = (elf_sec_handle)a, sec2 = (elf_sec_handle)b;
+    const elf_sec_handle sec1 = *(const elf_sec_handle*)a, sec2 = *(const elf_sec_handle*)b;
     if(sec1->file_offset > sec2->file_offset)
         return 1;
     else if(sec1->file_offset < sec2->file_offset)
@@ -495,7 +495,6 @@ static int section_compare( const void *a, const void *b )
     else
         return 0;
 }
-
 
 orl_return ElfLoadFileStructure( elf_file_handle elf_file_hnd )
 {
@@ -576,15 +575,21 @@ orl_return ElfLoadFileStructure( elf_file_handle elf_file_hnd )
         for( i = 0; i < elf_file_hnd->num_sections; ++i ) {
             const elf_sec_handle elf_sec_hnd = elf_file_hnd->sec_handles[i];
             _ClientSeek( elf_file_hnd, elf_sec_hnd->file_offset, SEEK_SET );
-            elf_sec_hnd->contents = _ClientRead( elf_file_hnd, elf_sec_hnd->size );
             
-            if( elf_sec_hnd->contents == NULL ) {
-                while( i ){
-                    const elf_sec_handle other_elf_sec_hnd = elf_file_hnd->sec_handles[--i];
-                    _ClientFree( elf_file_hnd, other_elf_sec_hnd->contents );
-                    other_elf_sec_hnd->contents = NULL;
+            if(elf_sec_hnd->size == 0){
+                elf_sec_hnd->contents = NULL;
+            }
+            else{
+                elf_sec_hnd->contents = _ClientRead( elf_file_hnd, elf_sec_hnd->size );
+                
+                if( elf_sec_hnd->contents == NULL ) {
+                    while( i ){
+                        const elf_sec_handle other_elf_sec_hnd = elf_file_hnd->sec_handles[--i];
+                        _ClientFree( elf_file_hnd, other_elf_sec_hnd->contents );
+                        other_elf_sec_hnd->contents = NULL;
+                    }
+                    return ORL_ERROR;
                 }
-                return ORL_ERROR;
             }
         }
     }
