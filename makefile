@@ -4,6 +4,13 @@ ELFOBJECTS=elfentr.o elfflhn.o elfload.o elflwlv.o
 
 all: liborl.so liborl-static.a
 
+dynamic: liborl.so
+
+static: liborl-static.a
+
+clean:
+	rm *.o *.a *.so
+
 AR?=ar
 RANLIB?=ranlib
 
@@ -49,7 +56,7 @@ liborl.so: $(OBJECTS) $(COFFOBJECTS) $(ELFOBJECTS)
 	$(LINK) -g $(COFFOBJECTS) $(ELFOBJECTS) $(OBJECTS) -shared -o liborl.so
 
 liborl-static.a: $(OBJECTS) $(COFFOBJECTS) $(ELFOBJECTS)
-	$(AR) -rc liborl-static.a $(OBJECTS)
+	$(AR) -rc liborl-static.a $(OBJECTS) $(COFFOBJECTS) $(ELFOBJECTS)
 	$(RANLIB) liborl-static.a
 
 # COFF library
