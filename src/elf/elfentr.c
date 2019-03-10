@@ -84,7 +84,7 @@ orl_return ElfFileFini( elf_file_handle elf_file_hnd )
     return( ElfRemoveFileLinks( elf_file_hnd ) );
 }
 
-orl_return ElfFileScan( elf_file_handle elf_file_hnd, const char *desired, orl_sec_return_func return_func )
+orl_return ElfFileScan( elf_file_handle elf_file_hnd, const char *desired, orl_sec_return_func return_func, void *cookie )
 {
     struct orl_hash_key h_key;
 
@@ -92,7 +92,7 @@ orl_return ElfFileScan( elf_file_handle elf_file_hnd, const char *desired, orl_s
         /* global request */
         elf_quantity i;
         for( i = 0; i < elf_file_hnd->num_sections; ++i ) {
-            const orl_return return_val = return_func( (orl_sec_handle)elf_file_hnd->sec_handles[i] );
+            const orl_return return_val = return_func( (orl_sec_handle)elf_file_hnd->sec_handles[i], cookie );
             if( return_val != ORL_OKAY ) {
                 return return_val;
             }
@@ -108,7 +108,7 @@ orl_return ElfFileScan( elf_file_handle elf_file_hnd, const char *desired, orl_s
         }
         h_key.u.string = desired;
         for( data_entry = ORLHashTableQuery( elf_file_hnd->sec_name_hash_table, h_key ); data_entry != NULL; data_entry = data_entry->next ) {
-            const orl_return return_val = return_func( data_entry->data.u.sec_handle );
+            const orl_return return_val = return_func( data_entry->data.u.sec_handle, cookie );
             if( return_val != ORL_OKAY ) {
                 return return_val;
             }
@@ -223,7 +223,7 @@ orl_return ElfSecGetContents( elf_sec_handle elf_sec_hnd, unsigned char **buffer
     return ORL_ERROR;
 }
 
-orl_return ElfSecQueryReloc( elf_sec_handle elf_sec_hnd, elf_sec_offset sec_offset, orl_reloc_return_func return_func )
+orl_return ElfSecQueryReloc( elf_sec_handle elf_sec_hnd, elf_sec_offset sec_offset, orl_reloc_return_func return_func, void *cookie )
 {
     uint64_t index;
     elf_sec_handle reloc_sec_hnd;
@@ -243,7 +243,7 @@ orl_return ElfSecQueryReloc( elf_sec_handle elf_sec_hnd, elf_sec_offset sec_offs
     reloc = reloc_sec_hnd->assoc.reloc.relocs;
     for( index = 0; index < reloc_sec_hnd->size; index += reloc_sec_hnd->entsize ) {
         if( reloc->offset == sec_offset ) {
-            const orl_return return_val = return_func( reloc );
+            const orl_return return_val = return_func( reloc, cookie );
             if( return_val != ORL_OKAY ) {
                 return return_val;
             }
@@ -253,7 +253,7 @@ orl_return ElfSecQueryReloc( elf_sec_handle elf_sec_hnd, elf_sec_offset sec_offs
     return ORL_OKAY;
 }
 
-orl_return ElfSecScanReloc( elf_sec_handle elf_sec_hnd, orl_reloc_return_func return_func )
+orl_return ElfSecScanReloc( elf_sec_handle elf_sec_hnd, orl_reloc_return_func return_func, void *cookie )
 {
     uint64_t index;
     elf_sec_handle reloc_sec_hnd;
@@ -273,7 +273,7 @@ orl_return ElfSecScanReloc( elf_sec_handle elf_sec_hnd, orl_reloc_return_func re
     }
     reloc = reloc_sec_hnd->assoc.reloc.relocs;
     for( index = 0; index < reloc_sec_hnd->size; index += reloc_sec_hnd->entsize ) {
-        const orl_return return_val = return_func( reloc );
+        const orl_return return_val = return_func( reloc, cookie );
         if( return_val != ORL_OKAY )
             return return_val;
         reloc++;
@@ -311,7 +311,7 @@ elf_sec_handle ElfCvtIdxToSecHdl( elf_file_handle fhdl, orl_table_index idx )
     return 0;
 }
 
-orl_return ElfRelocSecScan( elf_sec_handle elf_sec_hnd, orl_reloc_return_func return_func )
+orl_return ElfRelocSecScan( elf_sec_handle elf_sec_hnd, orl_reloc_return_func return_func, void *cookie )
 {
     uint64_t index;
     orl_reloc reloc;
@@ -326,7 +326,7 @@ orl_return ElfRelocSecScan( elf_sec_handle elf_sec_hnd, orl_reloc_return_func re
     }
     reloc = elf_sec_hnd->assoc.reloc.relocs;
     for( index = 0; index < elf_sec_hnd->size; index += elf_sec_hnd->entsize ) {
-        const orl_return return_val = return_func( reloc );
+        const orl_return return_val = return_func( reloc, cookie );
         if( return_val != ORL_OKAY )
             return return_val;
         reloc++;
@@ -334,7 +334,7 @@ orl_return ElfRelocSecScan( elf_sec_handle elf_sec_hnd, orl_reloc_return_func re
     return ORL_TRUE;
 }
 
-orl_return ElfSymbolSecScan( elf_sec_handle elf_sec_hnd, orl_symbol_return_func return_func )
+orl_return ElfSymbolSecScan( elf_sec_handle elf_sec_hnd, orl_symbol_return_func return_func, void *cookie )
 {
     uint64_t index;
     elf_symbol_handle elf_symbol_hnd;
@@ -353,7 +353,7 @@ orl_return ElfSymbolSecScan( elf_sec_handle elf_sec_hnd, orl_symbol_return_func 
         return ORL_ERROR;
     }
     for( index = 0; index < elf_sec_hnd->size; index += elf_sec_hnd->entsize ) {
-        const orl_return return_val = return_func( (orl_symbol_handle)elf_symbol_hnd );
+        const orl_return return_val = return_func( (orl_symbol_handle)elf_symbol_hnd, cookie );
         if( return_val != ORL_OKAY )
             return return_val;
         elf_symbol_hnd++;

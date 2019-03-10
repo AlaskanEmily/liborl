@@ -325,20 +325,20 @@ orl_rva ORLExportTableRVA( orl_file_handle orl_file_hnd )
     return rva;
 }
 
-orl_return ORLFileScan( orl_file_handle orl_file_hnd, const char *desired, orl_sec_return_func return_func )
+orl_return ORLFileScan( orl_file_handle orl_file_hnd, const char *desired, orl_sec_return_func return_func, void *cookie )
 {
     switch( LCL_FIL_HND( orl_file_hnd )->type ) {
 #ifdef ORL_ENABLE_ELF
     case ORL_ELF:
-        return( ElfFileScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.elf, desired, return_func ) );
+        return( ElfFileScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.elf, desired, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_COFF
     case ORL_COFF:
-        return( CoffFileScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.coff, desired, return_func ) );
+        return( CoffFileScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.coff, desired, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_OMF
     case ORL_OMF:
-        return( OmfFileScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.omf, desired, return_func ) );
+        return( OmfFileScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.omf, desired, return_func, cookie ) );
 #endif
     default:    /* ORL_UNRECOGNIZED_FORMAT */
         break;
@@ -765,20 +765,20 @@ orl_return ORLSecGetContents( orl_sec_handle orl_sec_hnd, unsigned char **buffer
     return ORL_ERROR;
 }
 
-orl_return ORLSecQueryReloc( orl_sec_handle orl_sec_hnd, orl_sec_offset sec_offset, orl_reloc_return_func return_func )
+orl_return ORLSecQueryReloc( orl_sec_handle orl_sec_hnd, orl_sec_offset sec_offset, orl_reloc_return_func return_func, void *cookie )
 {
     switch( LCL_SEC_HND( orl_sec_hnd )->type ) {
 #ifdef ORL_ENABLE_ELF
     case ORL_ELF:
-        return( ElfSecQueryReloc( (elf_sec_handle)orl_sec_hnd, sec_offset, return_func ) );
+        return( ElfSecQueryReloc( (elf_sec_handle)orl_sec_hnd, sec_offset, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_COFF
     case ORL_COFF:
-        return( CoffSecQueryReloc( (coff_sec_handle)orl_sec_hnd, sec_offset, return_func ) );
+        return( CoffSecQueryReloc( (coff_sec_handle)orl_sec_hnd, sec_offset, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_OMF
     case ORL_OMF:
-        return( OmfSecQueryReloc( (omf_sec_handle)orl_sec_hnd, sec_offset, return_func ) );
+        return( OmfSecQueryReloc( (omf_sec_handle)orl_sec_hnd, sec_offset, return_func, cookie ) );
 #endif
     default:    /* ORL_UNRECOGNIZED_FORMAT */
         break;
@@ -786,20 +786,20 @@ orl_return ORLSecQueryReloc( orl_sec_handle orl_sec_hnd, orl_sec_offset sec_offs
     return ORL_ERROR;
 }
 
-orl_return ORLSecScanReloc( orl_sec_handle orl_sec_hnd, orl_reloc_return_func return_func )
+orl_return ORLSecScanReloc( orl_sec_handle orl_sec_hnd, orl_reloc_return_func return_func, void *cookie )
 {
     switch( LCL_SEC_HND( orl_sec_hnd )->type ) {
 #ifdef ORL_ENABLE_ELF
     case ORL_ELF:
-        return( ElfSecScanReloc( (elf_sec_handle)orl_sec_hnd, return_func ) );
+        return( ElfSecScanReloc( (elf_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_COFF
     case ORL_COFF:
-        return( CoffSecScanReloc( (coff_sec_handle)orl_sec_hnd, return_func ) );
+        return( CoffSecScanReloc( (coff_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_OMF
     case ORL_OMF:
-        return( OmfSecScanReloc( (omf_sec_handle)orl_sec_hnd, return_func ) );
+        return( OmfSecScanReloc( (omf_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
     default:    /* ORL_UNRECOGNIZED_FORMAT */
         break;
@@ -852,20 +852,20 @@ orl_sec_handle ORLCvtIdxToSecHdl( orl_file_handle orl_file_hnd, orl_table_index 
     return NULL;
 }
 
-orl_return ORLRelocSecScan( orl_sec_handle orl_sec_hnd, orl_reloc_return_func return_func )
+orl_return ORLRelocSecScan( orl_sec_handle orl_sec_hnd, orl_reloc_return_func return_func, void *cookie )
 {
     switch( LCL_SEC_HND( orl_sec_hnd )->type ) {
 #ifdef ORL_ENABLE_ELF
     case ORL_ELF:
-        return( ElfRelocSecScan( (elf_sec_handle)orl_sec_hnd, return_func ) );
+        return( ElfRelocSecScan( (elf_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_COFF
     case ORL_COFF:
-        return( CoffRelocSecScan( (coff_sec_handle)orl_sec_hnd, return_func ) );
+        return( CoffRelocSecScan( (coff_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_OMF
     case ORL_OMF:
-        return( OmfRelocSecScan( (omf_sec_handle)orl_sec_hnd, return_func ) );
+        return( OmfRelocSecScan( (omf_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
     default:    /* ORL_UNRECOGNIZED_FORMAT */
         break;
@@ -873,20 +873,20 @@ orl_return ORLRelocSecScan( orl_sec_handle orl_sec_hnd, orl_reloc_return_func re
     return ORL_ERROR;
 }
 
-orl_return ORLSymbolSecScan( orl_sec_handle orl_sec_hnd, orl_symbol_return_func return_func )
+orl_return ORLSymbolSecScan( orl_sec_handle orl_sec_hnd, orl_symbol_return_func return_func, void *cookie )
 {
     switch( LCL_SEC_HND( orl_sec_hnd )->type ) {
 #ifdef ORL_ENABLE_ELF
     case ORL_ELF:
-        return( ElfSymbolSecScan( (elf_sec_handle)orl_sec_hnd, return_func ) );
+        return( ElfSymbolSecScan( (elf_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_COFF
     case ORL_COFF:
-        return( CoffSymbolSecScan( (coff_sec_handle)orl_sec_hnd, return_func ) );
+        return( CoffSymbolSecScan( (coff_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
 #ifdef ORL_ENABLE_OMF
     case ORL_OMF:
-        return( OmfSymbolSecScan( (omf_sec_handle)orl_sec_hnd, return_func ) );
+        return( OmfSymbolSecScan( (omf_sec_handle)orl_sec_hnd, return_func, cookie ) );
 #endif
     default:    /* ORL_UNRECOGNIZED_FORMAT */
         break;
@@ -1062,7 +1062,7 @@ orl_symbol_handle ORLSymbolGetAssociated( orl_symbol_handle orl_symbol_hnd )
     return NULL;
 }
 
-orl_return ORLGroupsScan( orl_file_handle orl_file_hnd, orl_group_return_func return_func )
+orl_return ORLGroupsScan( orl_file_handle orl_file_hnd, orl_group_return_func return_func, void *cookie )
 {
     switch( LCL_FIL_HND( orl_file_hnd )->type ) {
 #ifdef ORL_ENABLE_ELF
@@ -1075,7 +1075,7 @@ orl_return ORLGroupsScan( orl_file_handle orl_file_hnd, orl_group_return_func re
 #endif
 #ifdef ORL_ENABLE_OMF
     case ORL_OMF:
-        return( OmfGroupsScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.omf, return_func ) );
+        return( OmfGroupsScan( LCL_FIL_HND( orl_file_hnd )->file_hnd.omf, return_func, cookie ) );
 #endif
     default:    /* ORL_UNRECOGNIZED_FORMAT */
         break;

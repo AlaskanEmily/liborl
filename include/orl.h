@@ -52,7 +52,7 @@ orl_return ORLFileFini( orl_file_handle );
  * If NULL is provided as the section name, the return function will be called on all sections.
  * If the return function returns other than ORL_OKAY, iteration will stop.
  */
-orl_return ORLFileScan( orl_file_handle, const char *, orl_sec_return_func );
+orl_return ORLFileScan( orl_file_handle, const char *, orl_sec_return_func, void * );
 orl_machine_type ORLFileGetMachineType( orl_file_handle );
 orl_file_flags ORLFileGetFlags( orl_file_handle );
 orl_file_type ORLFileGetType( orl_file_handle );
@@ -73,8 +73,8 @@ orl_linnum ORLSecGetLines( orl_sec_handle );
 orl_table_index ORLSecGetNumLines( orl_sec_handle );
 orl_sec_offset ORLSecGetOffset( orl_sec_handle );
 orl_return ORLSecGetContents( orl_sec_handle, unsigned char ** );
-orl_return ORLSecQueryReloc( orl_sec_handle, orl_sec_offset, orl_reloc_return_func );
-orl_return ORLSecScanReloc( orl_sec_handle, orl_reloc_return_func );
+orl_return ORLSecQueryReloc( orl_sec_handle, orl_sec_offset, orl_reloc_return_func, void * );
+orl_return ORLSecScanReloc( orl_sec_handle, orl_reloc_return_func, void * );
 orl_table_index ORLCvtSecHdlToIdx( orl_sec_handle );
 orl_sec_handle ORLCvtIdxToSecHdl( orl_file_handle, orl_table_index );
 
@@ -84,8 +84,8 @@ orl_sec_frame ORLSecGetAbsFrame( orl_sec_handle );
 orl_sec_handle ORLSecGetAssociated( orl_sec_handle );
 orl_group_handle ORLSecGetGroup( orl_sec_handle );
 
-orl_return ORLRelocSecScan( orl_sec_handle, orl_reloc_return_func );
-orl_return ORLSymbolSecScan( orl_sec_handle, orl_symbol_return_func );
+orl_return ORLRelocSecScan( orl_sec_handle, orl_reloc_return_func, void * );
+orl_return ORLSymbolSecScan( orl_sec_handle, orl_symbol_return_func, void * );
 orl_return ORLNoteSecScan( orl_sec_handle, struct orl_note_callbacks *, void * );
 
 const char *ORLSymbolGetName( orl_symbol_handle );
@@ -96,7 +96,7 @@ unsigned char ORLSymbolGetRawInfo( orl_symbol_handle );
 orl_sec_handle ORLSymbolGetSecHandle( orl_symbol_handle );
 orl_symbol_handle ORLSymbolGetAssociated( orl_symbol_handle );
 
-orl_return ORLGroupsScan( orl_file_handle, orl_group_return_func );
+orl_return ORLGroupsScan( orl_file_handle, orl_group_return_func, void * );
 const char *ORLGroupName( orl_group_handle );
 orl_table_index ORLGroupSize( orl_group_handle );
 const char *ORLGroupMember( orl_group_handle, orl_table_index );

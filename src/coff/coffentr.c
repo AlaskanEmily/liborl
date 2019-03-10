@@ -82,13 +82,13 @@ orl_return CoffFileFini( coff_file_handle coff_file_hnd )
     return( CoffRemoveFileLinks( coff_file_hnd ) );
 }
 
-orl_return CoffFileScan( coff_file_handle coff_file_hnd, const char *desired, orl_sec_return_func return_func )
+orl_return CoffFileScan( coff_file_handle coff_file_hnd, const char *desired, orl_sec_return_func return_func, void *cookie )
 {
     if( desired == NULL ) {
         /* global request */
         coff_quantity i;
         for( i = 0; i < coff_file_hnd->num_sections; i++ ) {
-            const orl_return return_val = return_func( (orl_sec_handle)coff_file_hnd->coff_sec_hnd[i] );
+            const orl_return return_val = return_func( (orl_sec_handle)coff_file_hnd->coff_sec_hnd[i], cookie );
             if( return_val != ORL_OKAY )
                 return return_val;
         }
@@ -103,7 +103,7 @@ orl_return CoffFileScan( coff_file_handle coff_file_hnd, const char *desired, or
         }
         h_key.u.string = desired;
         for( data_entry = ORLHashTableQuery( coff_file_hnd->sec_name_hash_table, h_key ); data_entry != NULL; data_entry = data_entry->next ) {
-            const orl_return return_val = return_func( data_entry->data.u.sec_handle );
+            const orl_return return_val = return_func( data_entry->data.u.sec_handle, cookie );
             if( return_val != ORL_OKAY )
                 return return_val;
         }
@@ -225,7 +225,7 @@ orl_return CoffSecGetContents( coff_sec_handle coff_sec_hnd, unsigned char **buf
     }
 }
 
-orl_return CoffSecQueryReloc( coff_sec_handle coff_sec_hnd, coff_sec_offset sec_offset, orl_reloc_return_func return_func )
+orl_return CoffSecQueryReloc( coff_sec_handle coff_sec_hnd, coff_sec_offset sec_offset, orl_reloc_return_func return_func, void *cookie )
 {
     coff_sec_handle reloc_sec_hnd;
 
@@ -249,7 +249,7 @@ orl_return CoffSecQueryReloc( coff_sec_handle coff_sec_hnd, coff_sec_offset sec_
         
         for( index = 0; index < limit; index++ ) {
             if( reloc->offset == sec_offset ) {
-                const orl_return return_val = return_func( reloc + index );
+                const orl_return return_val = return_func( reloc + index, cookie );
                 if( return_val != ORL_OKAY )
                     return return_val;
             }
@@ -279,7 +279,7 @@ coff_sec_handle CoffCvtIdxToSecHdl( coff_file_handle fhdl, orl_table_index idx )
     return fhdl->orig_sec_hnd[idx - 1];
 }
 
-orl_return CoffSecScanReloc( coff_sec_handle coff_sec_hnd, orl_reloc_return_func return_func )
+orl_return CoffSecScanReloc( coff_sec_handle coff_sec_hnd, orl_reloc_return_func return_func, void *cookie )
 {
     coff_sec_handle reloc_sec_hnd;
 
@@ -302,7 +302,7 @@ orl_return CoffSecScanReloc( coff_sec_handle coff_sec_hnd, orl_reloc_return_func
             return ORL_ERROR;
         
         for( index = 0; index < limit; index++ ) {
-            const orl_return return_val = return_func( reloc + index );
+            const orl_return return_val = return_func( reloc + index, cookie );
             if( return_val != ORL_OKAY )
                 return return_val;
         }
@@ -311,7 +311,7 @@ orl_return CoffSecScanReloc( coff_sec_handle coff_sec_hnd, orl_reloc_return_func
     return ORL_OKAY;
 }
 
-orl_return CoffRelocSecScan( coff_sec_handle coff_sec_hnd, orl_reloc_return_func return_func )
+orl_return CoffRelocSecScan( coff_sec_handle coff_sec_hnd, orl_reloc_return_func return_func, void *cookie )
 {
     if( coff_sec_hnd->type != ORL_SEC_TYPE_RELOCS )
         return ORL_ERROR;
@@ -330,7 +330,7 @@ orl_return CoffRelocSecScan( coff_sec_handle coff_sec_hnd, orl_reloc_return_func
             return ORL_ERROR;
         
         for( index = 0; index < limit; index++ ) {
-            const orl_return return_val = return_func( reloc + index );
+            const orl_return return_val = return_func( reloc + index, cookie );
             if( return_val != ORL_OKAY )
                 return return_val;
         }
@@ -338,7 +338,7 @@ orl_return CoffRelocSecScan( coff_sec_handle coff_sec_hnd, orl_reloc_return_func
     return ORL_OKAY;
 }
 
-orl_return CoffSymbolSecScan( coff_sec_handle coff_sec_hnd, orl_symbol_return_func return_func )
+orl_return CoffSymbolSecScan( coff_sec_handle coff_sec_hnd, orl_symbol_return_func return_func, void *cookie )
 {
     coff_quantity index;
     coff_symbol_handle coff_symbol_hnd;
@@ -353,7 +353,7 @@ orl_return CoffSymbolSecScan( coff_sec_handle coff_sec_hnd, orl_symbol_return_fu
     for( index = 0; index < coff_sec_hnd->coff_file_hnd->num_symbols; index++ ) {
         coff_symbol_hnd = coff_sec_hnd->coff_file_hnd->symbol_handles + index;
         {
-            const orl_return return_val = return_func( (orl_symbol_handle)coff_symbol_hnd );
+            const orl_return return_val = return_func( (orl_symbol_handle)coff_symbol_hnd, cookie );
             if( return_val != ORL_OKAY )
                 return return_val;
         }

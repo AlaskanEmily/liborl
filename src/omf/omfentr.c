@@ -107,7 +107,7 @@ orl_return OMFENTRY OmfFileFini( omf_file_handle ofh )
 }
 
 
-orl_return OMFENTRY OmfFileScan( omf_file_handle ofh, const char *desired, orl_sec_return_func return_func )
+orl_return OMFENTRY OmfFileScan( omf_file_handle ofh, const char *desired, orl_sec_return_func return_func, void *cookie )
 {
     orl_hash_data_entry                 data_entry;
     omf_sec_handle                      sh;
@@ -124,7 +124,7 @@ orl_return OMFENTRY OmfFileScan( omf_file_handle ofh, const char *desired, orl_s
             // string tables are internal sections which are not seen by
             // the user code
             if( sh->type != ORL_SEC_TYPE_STR_TABLE ) {
-                return_val = return_func( (orl_sec_handle)sh );
+                return_val = return_func( (orl_sec_handle)sh, cookie );
                 if( return_val != ORL_OKAY ) {
                     return( return_val );
                 }
@@ -136,7 +136,7 @@ orl_return OMFENTRY OmfFileScan( omf_file_handle ofh, const char *desired, orl_s
         for( data_entry = ORLHashTableQuery( ofh->symbol_table->assoc.sym.hash_tab, h_key ); data_entry != NULL; data_entry = data_entry->next ) {
             sym = (omf_symbol_handle)data_entry->data.u.sym_handle;
             if( ( sym->typ == ORL_SYM_TYPE_SECTION ) && (sym->flags & OMF_SYM_FLAGS_GRPDEF) == 0 ) {
-                return_val = return_func( (orl_sec_handle)sym->section );
+                return_val = return_func( (orl_sec_handle)sym->section, cookie );
                 if( return_val != ORL_OKAY ) {
                     return( return_val );
                 }
@@ -361,8 +361,11 @@ orl_return OMFENTRY OmfSecGetContents( omf_sec_handle sh, unsigned_8 **buffer )
 }
 
 
-static orl_return OMFENTRY relocScan( omf_sec_handle sh, omf_sec_offset sec_offset,
-                                      orl_reloc_return_func return_func, bool check )
+static orl_return OMFENTRY relocScan( omf_sec_handle sh
+    omf_sec_offset sec_offset,
+    orl_reloc_return_func return_func,
+    bool check,
+    void *cookie )
 {
     unsigned_32         x;
     unsigned_32         num;
@@ -390,7 +393,7 @@ static orl_return OMFENTRY relocScan( omf_sec_handle sh, omf_sec_offset sec_offs
         rsh = (omf_sec_handle)(relocs[x]->section);
         if( global || ( sh->index == rsh->index ) ) {
             if( !check || ( relocs[x]->offset == sec_offset ) ) {
-                return_val = return_func( relocs[x] );
+                return_val = return_func( relocs[x], cookie );
                 if( return_val != ORL_OKAY ) {
                     return( return_val );
                 }
@@ -401,25 +404,28 @@ static orl_return OMFENTRY relocScan( omf_sec_handle sh, omf_sec_offset sec_offs
 }
 
 
-orl_return OMFENTRY OmfSecQueryReloc( omf_sec_handle sh, omf_sec_offset sec_offset, orl_reloc_return_func return_func )
+orl_return OMFENTRY OmfSecQueryReloc( omf_sec_handle sh,
+    omf_sec_offset sec_offset,
+    orl_reloc_return_func return_func,
+    void *cookie )
 {
     assert( sh );
     assert( return_func );
 
     if( sh->type != ORL_SEC_TYPE_PROG_BITS )
         return( ORL_ERROR );
-    return( relocScan( sh, sec_offset, return_func, true ) );
+    return( relocScan( sh, sec_offset, return_func, true, cookie ) );
 }
 
 
-orl_return OMFENTRY OmfSecScanReloc( omf_sec_handle sh, orl_reloc_return_func return_func )
+orl_return OMFENTRY OmfSecScanReloc( omf_sec_handle sh, orl_reloc_return_func return_func, void *cookie )
 {
     assert( sh );
     assert( return_func );
 
     if( sh->type != ORL_SEC_TYPE_PROG_BITS )
         return( ORL_ERROR );
-    return( relocScan( sh, 0, return_func, false ) );
+    return( relocScan( sh, 0, return_func, false, cookie ) );
 }
 
 // ask jim for next 2 calls
@@ -448,18 +454,18 @@ omf_sec_handle OMFENTRY OmfCvtIdxToSecHdl( omf_file_handle ofh, orl_table_index 
 }
 
 
-orl_return OMFENTRY OmfRelocSecScan( omf_sec_handle sh, orl_reloc_return_func return_func )
+orl_return OMFENTRY OmfRelocSecScan( omf_sec_handle sh, orl_reloc_return_func return_func, void *cookie )
 {
     assert( sh );
     assert( return_func );
 
     if( sh->type != ORL_SEC_TYPE_RELOCS )
         return( ORL_ERROR );
-    return( relocScan( sh, 0, return_func, false ) );
+    return( relocScan( sh, 0, return_func, false, cookie ) );
 }
 
 
-orl_return OMFENTRY OmfSymbolSecScan( omf_sec_handle sh, orl_symbol_return_func return_func )
+orl_return OMFENTRY OmfSymbolSecScan( omf_sec_handle sh, orl_symbol_return_func return_func, void *cookie )
 {
     int                     x;
     orl_return              return_val;
@@ -475,7 +481,7 @@ orl_return OMFENTRY OmfSymbolSecScan( omf_sec_handle sh, orl_symbol_return_func 
         return( ORL_ERROR );
 
     for( x = 0; x < sh->assoc.sym.num; x++ ) {
-        return_val = return_func( (orl_symbol_handle)syms[x] );
+        return_val = return_func( (orl_symbol_handle)syms[x], cookie );
         if( return_val != ORL_OKAY ) {
             return( return_val );
         }
@@ -568,7 +574,7 @@ orl_return OMFENTRY OmfNoteSecScan( omf_sec_handle hnd, orl_note_callbacks *cbs,
 }
 
 
-orl_return OMFENTRY OmfGroupsScan( omf_file_handle hnd, orl_group_return_func return_func )
+orl_return OMFENTRY OmfGroupsScan( omf_file_handle hnd, orl_group_return_func return_func, void *cookie )
 {
     orl_table_index     idx;
     orl_return          return_val;
@@ -579,7 +585,7 @@ orl_return OMFENTRY OmfGroupsScan( omf_file_handle hnd, orl_group_return_func re
     return_val = ORL_OKAY;
     for( idx = 0; idx < hnd->num_groups; idx++ ) {
         assert( hnd->groups );
-        return_val = return_func( (orl_group_handle)hnd->groups[idx] );
+        return_val = return_func( (orl_group_handle)hnd->groups[idx], cookie );
         if( return_val != ORL_OKAY ) {
             break;
         }

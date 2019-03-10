@@ -40,7 +40,7 @@ orl_return ElfFini( elf_handle );
 
 orl_return ElfFileInit( elf_handle, orl_file_id, elf_file_handle * );
 orl_return ElfFileFini( elf_file_handle );
-orl_return ElfFileScan( elf_file_handle, const char *, orl_sec_return_func );
+orl_return ElfFileScan( elf_file_handle, const char *, orl_sec_return_func, void *cookie );
 orl_machine_type ElfFileGetMachineType( elf_file_handle );
 orl_file_flags ElfFileGetFlags( elf_file_handle );
 orl_file_type ElfFileGetType( elf_file_handle );
@@ -57,14 +57,14 @@ elf_sec_handle ElfSecGetStringTable( elf_sec_handle );
 elf_sec_handle ElfSecGetSymbolTable( elf_sec_handle );
 elf_sec_handle ElfSecGetRelocTable( elf_sec_handle );
 orl_return ElfSecGetContents( elf_sec_handle, unsigned char ** );
-orl_return ElfSecQueryReloc( elf_sec_handle, elf_sec_offset, orl_reloc_return_func );
-orl_return ElfSecScanReloc( elf_sec_handle, orl_reloc_return_func );
+orl_return ElfSecQueryReloc( elf_sec_handle, elf_sec_offset, orl_reloc_return_func, void *cookie );
+orl_return ElfSecScanReloc( elf_sec_handle, orl_reloc_return_func, void *cookie );
 
 orl_table_index ElfCvtSecHdlToIdx( elf_sec_handle );
 elf_sec_handle ElfCvtIdxToSecHdl( elf_file_handle, orl_table_index );
 
-orl_return ElfRelocSecScan( elf_sec_handle, orl_reloc_return_func );
-orl_return ElfSymbolSecScan( elf_sec_handle, orl_symbol_return_func );
+orl_return ElfRelocSecScan( elf_sec_handle, orl_reloc_return_func, void *cookie );
+orl_return ElfSymbolSecScan( elf_sec_handle, orl_symbol_return_func, void *cookie );
 orl_return ElfNoteSecScan( elf_sec_handle, struct orl_note_callbacks *, void * );
 
 const char *ElfSymbolGetName( elf_symbol_handle );

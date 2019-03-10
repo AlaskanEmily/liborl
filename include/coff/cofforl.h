@@ -41,7 +41,7 @@ orl_return CoffFini( coff_handle );
 
 orl_return CoffFileInit( coff_handle, orl_file_id, coff_file_handle * );
 orl_return CoffFileFini( coff_file_handle );
-orl_return CoffFileScan( coff_file_handle, const char *, orl_sec_return_func );
+orl_return CoffFileScan( coff_file_handle, const char *, orl_sec_return_func, void * );
 orl_machine_type CoffFileGetMachineType( coff_file_handle );
 orl_file_flags CoffFileGetFlags( coff_file_handle );
 orl_file_type CoffFileGetType( coff_file_handle );
@@ -61,14 +61,14 @@ orl_linnum CoffSecGetLines( coff_sec_handle );
 orl_table_index CoffSecGetNumLines( coff_sec_handle );
 coff_sec_offset CoffSecGetOffset( coff_sec_handle );
 orl_return CoffSecGetContents( coff_sec_handle, unsigned char ** );
-orl_return CoffSecQueryReloc( coff_sec_handle, coff_sec_offset, orl_reloc_return_func );
-orl_return CoffSecScanReloc( coff_sec_handle, orl_reloc_return_func );
+orl_return CoffSecQueryReloc( coff_sec_handle, coff_sec_offset, orl_reloc_return_func, void * );
+orl_return CoffSecScanReloc( coff_sec_handle, orl_reloc_return_func, void * );
 
 orl_table_index CoffCvtSecHdlToIdx( coff_sec_handle );
 coff_sec_handle CoffCvtIdxToSecHdl( coff_file_handle, orl_table_index );
 
-orl_return CoffRelocSecScan( coff_sec_handle, orl_reloc_return_func );
-orl_return CoffSymbolSecScan( coff_sec_handle, orl_symbol_return_func );
+orl_return CoffRelocSecScan( coff_sec_handle, orl_reloc_return_func, void * );
+orl_return CoffSymbolSecScan( coff_sec_handle, orl_symbol_return_func, void * );
 orl_return CoffNoteSecScan( coff_sec_handle, struct orl_note_callbacks *, void * );
 
 const char *CoffSymbolGetName( coff_symbol_handle );

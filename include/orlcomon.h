@@ -48,10 +48,10 @@ struct orl_reloc_struct {
 
 typedef const struct orl_reloc_struct *orl_reloc;
 
-typedef orl_return (*orl_sec_return_func)( orl_sec_handle );
-typedef orl_return (*orl_reloc_return_func)( orl_reloc );
-typedef orl_return (*orl_symbol_return_func)( orl_symbol_handle );
-typedef orl_return (*orl_group_return_func)( orl_group_handle );
+typedef orl_return (*orl_sec_return_func)( orl_sec_handle, void*  );
+typedef orl_return (*orl_reloc_return_func)( orl_reloc, void*  );
+typedef orl_return (*orl_symbol_return_func)( orl_symbol_handle, void* );
+typedef orl_return (*orl_group_return_func)( orl_group_handle, void*  );
 
 typedef orl_return (*callback_export_fn)( const char *, void * );
 typedef orl_return (*callback_deflib_fn)( const char *, void * );
